@@ -31,7 +31,7 @@ THREE.PointerLockControls = function ( camera ) {
 		euler.x = (movementY * -0.002);
 		euler.y = (movementX * -0.002);
 
-		motion.rotation.add(euler);
+		player.motion.rotation.add(euler);
 
 	};
 

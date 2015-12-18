@@ -1,7 +1,9 @@
 function generateHeight( width, height ) {
 
+	var SEED = 0.17;
+
 	var size = width * height, data = new Uint8Array( size ),
-	perlin = new ImprovedNoise(), quality = 1, z = Math.random() * 100;
+	perlin = new ImprovedNoise(), quality = 1, z = SEED;
 
 	for ( var j = 0; j < 4; j ++ ) {
 		for ( var i = 0; i < size; i ++ ) {
@@ -30,12 +32,12 @@ function generateTerrain() {
 	}
 
 	var maxAnisotropy = renderer.getMaxAnisotropy();
-	var texture = THREE.ImageUtils.loadTexture( 'textures/cube/grass.gif' );
+	var texture = THREE.ImageUtils.loadTexture( 'textures/cube/grass2.jpg' );
 	texture.anisotropy = maxAnisotropy;
 		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 		texture.repeat.set( 1000, 1000 );
 
-	// material = new THREE.MeshLambertMaterial( { color: 0xffff99 } );
+	// material = new THREE.MeshLambertMaterial( { color: 0x66ff66 } );
 	material = new THREE.MeshPhongMaterial( { map: texture } );
 	var hills = new THREE.Mesh( geometry, material );
 	return hills;

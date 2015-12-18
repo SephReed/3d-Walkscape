@@ -14,14 +14,14 @@ if ( havePointerLock ) {
 
 			// controlsEnabled = true;
 			controls.enabled = true;
-			pause = false;
+			emulation.pause = false;
 
 			blocker.style.display = 'none';
 
 		} else {
 
 			controls.enabled = false;
-			pause = true;
+			emulation.pause = true;
 
 			blocker.style.display = '-webkit-box';
 			blocker.style.display = '-moz-box';
