@@ -12,6 +12,26 @@ function generateHeight( width, height ) {
 		}
 		quality *= 5;
 	}
+
+	// var centerX = ~~(width/2);
+	// var centerY = ~~(height/2);
+
+	// for (var i = 0; i < size; i++) {
+	// 	// data[i] += 10;
+
+	// 	var x = i % width, y = ~~ ( i / width );
+	// 	var offX = Math.abs(centerX-x);
+	// 	var offY = Math.abs(centerY-y);
+	// 	var dist = Math.sqrt((offX*offX)+(offY*offY));
+	// 	dist = ~~dist;
+
+
+	// 	var h = (data[i]-(0.1*(dist*dist)));
+	// 	data[i] = h >= 0 ? ~~h : 0;
+	// }
+
+
+
 	return data;
 }
 
@@ -30,9 +50,10 @@ function generateTerrain() {
 	for ( var i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
 		vertices[ j + 1 ] = data[ i ] * 10;
 	}
+	geometry.computeVertexNormals();
 
 	var maxAnisotropy = renderer.getMaxAnisotropy();
-	var texture = THREE.ImageUtils.loadTexture( 'textures/cube/grass2.jpg' );
+	var texture = THREE.ImageUtils.loadTexture( 'image_assets/textures/grass2.jpg' );
 	texture.anisotropy = maxAnisotropy;
 		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 		texture.repeat.set( 1000, 1000 );

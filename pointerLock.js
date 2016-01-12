@@ -16,12 +16,14 @@ if ( havePointerLock ) {
 			controls.enabled = true;
 			emulation.pause = false;
 
+
 			blocker.style.display = 'none';
 
 		} else {
 
 			controls.enabled = false;
 			emulation.pause = true;
+			sound1.pause();
 
 			blocker.style.display = '-webkit-box';
 			blocker.style.display = '-moz-box';

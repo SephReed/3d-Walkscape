@@ -50,16 +50,91 @@ function makePlatform( jsonUrl, textureUrl, textureQuality ) {
 // var scene = new THREE.Scene();
 
 // scene.add( camera );
-// scene.fog = new THREE.Fog( 0xf2f7ff, 1, 25000 );
 
-scene.add( makeSkybox( [
-	'textures/cube/skybox/px.jpg', // right
-	'textures/cube/skybox/nx.jpg', // left
-	'textures/cube/skybox/py.jpg', // top
-	'textures/cube/skybox/ny.jpg', // bottom
-	'textures/cube/skybox/pz.jpg', // back
-	'textures/cube/skybox/nz.jpg'  // front
-], 8000 ));
+
+var skybox =  makeSkybox( [
+	'image_assets/skybox/in_the_clouds/px.jpg', // right
+	'image_assets/skybox/in_the_clouds/nx.jpg', // left
+	'image_assets/skybox/in_the_clouds/py.jpg', // top
+	'image_assets/skybox/in_the_clouds/ny.jpg', // bottom
+	'image_assets/skybox/in_the_clouds/pz.jpg', // back
+	'image_assets/skybox/in_the_clouds/nz.jpg'  // front
+], 8000 );
+
+scene.add(skybox)
+
+
+
+
+
+// load skybox
+
+// var cubeMap = new THREE.CubeTexture( [] );
+// cubeMap.format = THREE.RGBFormat;
+
+// var loader = new THREE.ImageLoader();
+// loader.load( 'image_assets/skybox/sunny_day_horizon/cubeflat.png', function ( image ) {
+
+// 	var getSide = function ( x, y ) {
+
+// 		var size = 1024;
+
+// 		var canvas = document.createElement( 'canvas' );
+// 		canvas.width = size;
+// 		canvas.height = size;
+
+// 		var context = canvas.getContext( '2d' );
+// 		context.drawImage( image, - x * size, - y * size );
+
+// 		return canvas;
+
+// 	};
+
+// 	cubeMap.images[ 0 ] = getSide( 2, 1 ); // px
+// 	cubeMap.images[ 1 ] = getSide( 0, 1 ); // nx
+// 	cubeMap.images[ 2 ] = getSide( 1, 0 ); // py
+// 	cubeMap.images[ 3 ] = getSide( 1, 2 ); // ny
+// 	cubeMap.images[ 4 ] = getSide( 1, 1 ); // pz
+// 	cubeMap.images[ 5 ] = getSide( 3, 1 ); // nz
+// 	cubeMap.needsUpdate = true;
+
+// } );
+
+// var cubeShader = THREE.ShaderLib[ 'cube' ];
+// cubeShader.uniforms[ 'tCube' ].value = cubeMap;
+
+// var skyBoxMaterial = new THREE.ShaderMaterial( {
+// 	fragmentShader: cubeShader.fragmentShader,
+// 	vertexShader: cubeShader.vertexShader,
+// 	uniforms: cubeShader.uniforms,
+// 	depthWrite: false,
+// 	side: THREE.BackSide
+// } );
+
+// var skyBox = new THREE.Mesh(
+// 	new THREE.BoxGeometry( 5000, 5000, 5000 ),
+// 	skyBoxMaterial
+// );
+
+// scene.add( skyBox );
+
+
+
+
+
+
+
+
+
+
+
+
+var sound1 = new THREE.Audio( listener );
+sound1.load( 'sounds/tracks/wind_and_chimes.mp3' );
+sound1.setRefDistance( 200 );
+sound1.autoplay = true;
+skybox.add( sound1 );
+
 
 
 var plat = makePlatform(
@@ -79,6 +154,9 @@ scene.add( sphere );
 
 
 
+
+
+
  geometry = new THREE.BoxGeometry( 100, 1, 10 );
  material = new THREE.MeshNormalMaterial(  );
 var cube = new THREE.Mesh( geometry, material );
@@ -90,25 +168,16 @@ world.solids.push(cube);
 
 
 
-geometry = new THREE.BoxGeometry( 10000, 100, 10000 );
- material = new THREE.MeshPhongMaterial({color: 0x6666FF} );
-cube = new THREE.Mesh( geometry, material );
-cube.name = "water";
-cube.translateY(-650.0);
-scene.add( cube );
-world.solids.push(cube);
+// geometry = new THREE.BoxGeometry( 10000, 100, 10000 );
+// material = new THREE.MeshPhongMaterial({color: 0x6666FF, refractionRatio: 0.5, opacity: 0.5, transparent: true } );
+// // material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.5 } )
+// cube = new THREE.Mesh( geometry, material );
+// cube.name = "water";
+// cube.translateY(-650.5);
+// scene.add( cube );
+// world.solids.push(cube);
 
-
-
-
-
-
-
-
-
-
-
-
+// cube.fog = new THREE.Fog( 0xf2f7ff, 1, 5000 );
 
 
 
@@ -129,14 +198,96 @@ world.solids.push(hills);
 
 
 
+
+
+
+
+
+geometry = new THREE.Geometry();
+var sprite = THREE.ImageUtils.loadTexture( "image_assets/sprites/tree.png" );
+for ( i = 0; i < 100; i ++ ) {
+
+	var vertex = new THREE.Vector3();
+	vertex.x = Math.random() * 2000 - 1000;
+	// vertex.y = Math.random() * 2000 - 1000;
+	vertex.z = Math.random() * 2000 - 1000;
+	vertex.y = 1000;
+
+
+
+	var raycaster = new THREE.Raycaster();
+	raycaster.ray.direction.set( 0, -1, 0 );
+	raycaster.ray.origin = vertex;
+
+	var hits = raycaster.intersectObject( hills );
+
+	if( hits.length != 0 && ( hits[0].face.normal.y > 0 ) ) {
+		// var actualHeight = top_hit.distance - birdsEye;
+		vertex.y -= hits[0].distance;
+		vertex.y -= 780;
+	}
+
+
+	geometry.vertices.push( vertex );
+
+}
+// var parameters = [
+// 	// [ [1.0, 0.2, 0.5], sprite2, 20 ],
+// 	// [ [0.95, 0.1, 0.5], sprite3, 15 ],
+// 	[ [0.90, 0.9, 0.5], sprite, 100 ]
+// 	// [ [0.85, 0, 0.5], sprite5, 8 ],
+// 	// [ [0.80, 0, 0.5], sprite4, 5 ]
+// ];
+
+
+var color, size = 100, particles, materials = [];
+// for ( i = 0; i < parameters.length; i ++ ) {
+
+	// color  = parameters[i][0];
+	// sprite = parameters[i][1];
+	// size   = parameters[i][2];
+
+	material = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: true, transparent : true, opacity: 1.0 } );
+	// materials[i].color.setHSL( color[0], color[1], color[2] );
+
+	particles = new THREE.Points( geometry, material );
+
+	// particles.rotation.x = Math.random() * 6;
+	// particles.rotation.y = Math.random() * 6;
+	// particles.rotation.z = Math.random() * 6;
+
+	scene.add( particles );
+
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //LIGHTS
 // LIGHTS
 
-				var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+				var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.3 );
 				hemiLight.color.setHSL( 0.6, 1, 0.6 );
 				hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-				hemiLight.position.set( 0, 500, 0 );
-				// scene.add( hemiLight );
+				// hemiLight.position.set( 0, 500, 0 );
+				hemiLight.position.set( -10, 6, 10 );
+				hemiLight.position.multiplyScalar( 100 );
+				scene.add( hemiLight );
 
 				//
 
@@ -171,8 +322,8 @@ world.solids.push(hills);
 
 
 
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFShadowMap;
+// renderer.shadowMap.enabled = true;
+// renderer.shadowMap.type = THREE.PCFShadowMap;
 
 // var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
 // directionalLight.position.set( -1000, 1000, 1000 );
@@ -184,32 +335,42 @@ renderer.shadowMap.type = THREE.PCFShadowMap;
 
 
 
+var parameters = {
+	width: 2000,
+	height: 2000,
+	widthSegments: 250,
+	heightSegments: 250,
+	depth: 1500,
+	param: 4,
+	filterparam: 1
+};
 
 
 
-// var waterNormals = new THREE.ImageUtils.loadTexture( 'textures/waternormals.jpg' );
-// waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+var waterNormals = new THREE.ImageUtils.loadTexture( 'image_assets/normalmaps/waternormals.jpg' );
+waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 
-// var water = new THREE.Water( renderer, camera, scene, {
-// 	textureWidth: 512,
-// 	textureHeight: 512,
-// 	waterNormals: waterNormals,
-// 	alpha: 	1.0,
-// 	sunDirection: dirLight.position.clone().normalize(),
-// 	sunColor: 0xffffff,
-// 	waterColor: 0x001e0f,
-// 	distortionScale: 50.0,
-// } );
-
-// var waterPlane = new THREE.PlaneGeometry( 10000, 10000 );
-// waterPlane.translate(0, 0, -580);
+water = new THREE.Water( renderer, camera, scene, {
+	textureWidth: 512,
+	textureHeight: 512,
+	waterNormals: waterNormals,
+	alpha: 	0.9,
+	sunDirection: dirLight.position.clone().normalize(),
+	sunColor: 0xffffff,
+	waterColor: 0x001e0f,
+	distortionScale: 50.0,
+} );
 
 
-// var mirrorMesh = new THREE.Mesh(waterPlane, water.material);
+mirrorMesh = new THREE.Mesh(
+	new THREE.PlaneBufferGeometry( parameters.width * 500, parameters.height * 500 ),
+	water.material
+);
 
-// mirrorMesh.add( water );
-// mirrorMesh.rotation.x = - Math.PI * 0.5;
-// scene.add( mirrorMesh );
+mirrorMesh.add( water );
+mirrorMesh.rotation.x = - Math.PI * 0.5;
+// mirrorMesh.position.y = 2;
+scene.add( mirrorMesh );
 
 
 

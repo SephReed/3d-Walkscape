@@ -183,15 +183,17 @@ var keyboardControls = (function() {
 			if(player.motion.flymode) {
 			 	if(keysPressed[keys.SP] != keysPressed[keys.CTRL]) { 
 					if(keysPressed[keys.SP]) {
-						if(player.motion.velocity.y < 0.2) {
-							player.motion.velocity.y += 0.03;
-						}
-						else if(player.motion.velocity.y < 0.8) {
-							player.motion.velocity.y += 0.02;
-						}
-						else if(player.motion.velocity.y < 1.0) {
-							player.motion.velocity.y += 0.03;
-						}
+						// if(player.motion.velocity.y < 1.0) {
+						// 	player.motion.velocity.y += 0.03;
+						// }
+						// else if(player.motion.velocity.y < 4.0) {
+						// 	player.motion.velocity.y += 0.02;
+						// }
+						// else if(player.motion.velocity.y < 10.0) {
+						// 	player.motion.velocity.y += 0.03;
+						// }
+
+						player.motion.velocity.y = 3.0;
 					}
 
 
@@ -215,6 +217,7 @@ var keyboardControls = (function() {
 			}
 
 
+			//Move head to center whenever running
 			if(!player.motion.flymode) {
 				if(fwd || back || sideL || sideR) {
 					player.motion.rotation.z *= 0.8;
@@ -295,7 +298,12 @@ controls = new THREE.PointerLockControls( camera );
 var scene = new THREE.Scene();
 
 scene.add( camera );
-scene.fog = new THREE.Fog( 0xf2f7ff, 1, 25000 );
+// scene.fog = new THREE.Fog( 0xf2f7ff, 1, 25000 );
+
+var listener = new THREE.AudioListener();
+camera.add( listener );
+
+
 
 
 
@@ -332,11 +340,16 @@ var gameLoop = function( dt ) {
 	keyboardControls();
 
 	if(emulation.pause == false) {
+
+		water.material.uniforms.time.value += 1.0 / 160.0;
+		water.render();
+
 		resetPlayer();
 		// jumpPads();
 		applyPhysics( dt );
 		updateCamera();
 		// rotateFloaties();
+
 	}
 };
 
